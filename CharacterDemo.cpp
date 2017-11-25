@@ -60,6 +60,7 @@
 URHO3D_DEFINE_APPLICATION_MAIN(CharacterDemo)
 BoidSet setBoids;
 
+
 CharacterDemo::CharacterDemo(Context* context) :
     Sample(context),
     firstPerson_(false)
@@ -77,7 +78,7 @@ void CharacterDemo::Start()
     Sample::Start();
     if (touchEnabled_)
         touch_ = new Touch(context_, TOUCH_SENSITIVITY);
-	menuVisible = true;
+	menuVisible = false;
 
 	
 
@@ -151,6 +152,8 @@ void CharacterDemo::CreateScene()
 	
 	setBoids.Initialise(cache, scene_);
 	
+	
+	
 
 
 }
@@ -172,7 +175,7 @@ void CharacterDemo::SubscribeToEvents()
 
 }
 
-void CharacterDemo::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void CharacterDemo::HandleUpdate(StringHash eventType, VariantMap& eventData) // this moves everything 
 {
 	using namespace Update;
 	// Take the frame time step, which is stored as a float
@@ -196,6 +199,7 @@ void CharacterDemo::HandleUpdate(StringHash eventType, VariantMap& eventData)
 	// Read WASD keys and move the camera scene node to the corresponding
 	// direction if they are pressed, use the Translate() function
 	// (default local space) to move relative to the node's orientation.
+
 	if (input->GetKeyDown(KEY_W))
 		cameraNode_->Translate(Vector3::FORWARD * MOVE_SPEED *
 			timeStep);
@@ -205,10 +209,12 @@ void CharacterDemo::HandleUpdate(StringHash eventType, VariantMap& eventData)
 		cameraNode_->Translate(Vector3::LEFT * MOVE_SPEED * timeStep);
 	if (input->GetKeyDown(KEY_D))
 		cameraNode_->Translate(Vector3::RIGHT * MOVE_SPEED * timeStep);
+	//make the menu dissappear DOESNT WORk
 	if (input->GetKeyPress(KEY_M))
 		menuVisible = !menuVisible;
-
+	//spawn boids
 	setBoids.Update(timeStep, scene_);
+	HandlePostUpdate(eventType, eventData);
 	
 
 }
